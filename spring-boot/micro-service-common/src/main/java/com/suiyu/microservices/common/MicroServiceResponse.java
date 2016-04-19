@@ -1,9 +1,11 @@
 package com.suiyu.microservices.common;
 
+import java.io.Serializable;
+
 /**
  * Created by BingyuYin on 2016/4/16.
  */
-public class MicroServiceResponse {
+public class MicroServiceResponse implements Serializable{
     private int responseCode;
     private String responseMessage;
 
@@ -25,8 +27,7 @@ public class MicroServiceResponse {
 
     @Override
     public String toString() {
-        return "MicroServiceResponse [ " + "\n" +
-                                        "responseCode: " + responseCode + ",\n" +
-                                        "responseMessage: " + responseMessage + "\n]";
+        return "MicroServiceResponse [responseCode: " + responseCode +
+                                        "responseMessage: " + responseMessage + "]";
     }
 }

@@ -7,8 +7,11 @@ import com.suiyu.microservices.model.MicroServiceRegistry;
 import com.suiyu.microservices.service.HandlerInvokeService;
 import org.springframework.amqp.AmqpRejectAndDontRequeueException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by BingyuYin on 2016/4/15.
@@ -16,18 +19,27 @@ import org.springframework.stereotype.Component;
 @Component
 public class SimpleMessageListenerImpl implements MessageListener {
 
+    private Set<MicroServiceType> supportServiceSet = new HashSet<MicroServiceType>();
+
     @Autowired
     private MicroServiceRegistry serviceRegistry;
 
     @Autowired
     private HandlerInvokeService handlerInvokeService;
 
+    @PostConstruct
+    public void initSimpleMessageListenerImpl() {
+        supportServiceSet.add(serviceRegistry.getServiceType());
+        supportServiceSet.add(MicroServiceType.simple_service);
+    }
+
     private boolean isSupported(MicroServiceType serviceType) {
-        if ( MicroServiceType.simple_service.equals(serviceType) ) {
-            // currently let the simple service pass for all request
-            return true;
+        for ( MicroServiceType supportService : supportServiceSet ) {
+            if ( supportService.equals(serviceType) ) {
+                return true;
+            }
         }
-        return serviceRegistry.getServiceType().equals(serviceType);
+        return false;
     }
 
     @Override

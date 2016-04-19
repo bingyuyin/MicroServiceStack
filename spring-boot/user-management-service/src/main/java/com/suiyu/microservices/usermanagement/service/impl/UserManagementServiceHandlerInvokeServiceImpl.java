@@ -1,6 +1,6 @@
 package com.suiyu.microservices.usermanagement.service.impl;
 
-import com.suiyu.microservices.handler.MicroServiceRequestHandler;
+import com.suiyu.microservices.handler.MicroServiceActionHandler;
 import com.suiyu.microservices.service.impl.SimpleHandlerInvokeServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -14,14 +14,14 @@ import javax.annotation.PostConstruct;
  */
 @Component
 @Primary
-public class UserMangementServiceHandlerInvokeServiceImpl extends SimpleHandlerInvokeServiceImpl{
+public class UserManagementServiceHandlerInvokeServiceImpl extends SimpleHandlerInvokeServiceImpl{
     @Autowired
     @Qualifier(value = "customerActionHandlerImpl")
-    private MicroServiceRequestHandler customerActionHandlerImpl;
+    private MicroServiceActionHandler customerActionHandlerImpl;
 
     @Autowired
     @Qualifier(value = "adminActionHandlerImpl")
-    private MicroServiceRequestHandler adminActionHandlerImpl;
+    private MicroServiceActionHandler adminActionHandlerImpl;
 
     @PostConstruct
     public void initUserManagement() {

@@ -1,7 +1,7 @@
 package com.suiyu.microservices.handler.impl;
 
 import com.suiyu.microservices.common.CommonActionType;
-import com.suiyu.microservices.handler.MicroServiceRequestHandler;
+import com.suiyu.microservices.handler.MicroServiceActionHandler;
 import com.suiyu.microservices.model.MicroServiceResponseFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
  * Created by BingyuYin on 2016/4/16.
  */
 @Component("commonActionRequestHandlerImpl")
-public class CommonActionRequestHandlerImpl implements MicroServiceRequestHandler{
+public class CommonActionHandlerImpl implements MicroServiceActionHandler {
     @Autowired
     private MicroServiceResponseFactory responseFactory;
 
@@ -29,6 +29,6 @@ public class CommonActionRequestHandlerImpl implements MicroServiceRequestHandle
             }
             return response;
         }
-        return responseFactory.createErrorResponse(-1, "Can not handle action: " + action);
+        return responseFactory.createNullActionHandleResponse(-1, "Can not handle action: " + action);
     }
 }

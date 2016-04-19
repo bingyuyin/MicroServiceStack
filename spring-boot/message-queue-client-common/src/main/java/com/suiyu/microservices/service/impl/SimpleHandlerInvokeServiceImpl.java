@@ -1,6 +1,6 @@
 package com.suiyu.microservices.service.impl;
 
-import com.suiyu.microservices.handler.MicroServiceRequestHandler;
+import com.suiyu.microservices.handler.MicroServiceActionHandler;
 import com.suiyu.microservices.service.AbstractHandlerInvokeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -15,11 +15,11 @@ public class SimpleHandlerInvokeServiceImpl extends AbstractHandlerInvokeService
 
     @Autowired
     @Qualifier(value = "genericActionRequestHandlerImpl")
-    private MicroServiceRequestHandler genericActionRequestHandler;
+    private MicroServiceActionHandler genericActionRequestHandler;
 
     @Autowired
     @Qualifier(value = "commonActionRequestHandlerImpl")
-    private MicroServiceRequestHandler commonActionRequestHandler;
+    private MicroServiceActionHandler commonActionRequestHandler;
 
     // post construct method can be override, so choose a different name
     @PostConstruct
