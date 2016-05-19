@@ -42,14 +42,35 @@ public class SimpleMessageListenerImpl implements MessageListener {
         return false;
     }
 
-    @Override
-    public Object handleMessage(Object message) {
-        if (message instanceof MicroServiceRequest) {
-            MicroServiceRequest request = (MicroServiceRequest) message;
-            if (isSupported(request.getServiceType())) {
-                return handlerInvokeService.invoke(request.getAction(), request.getBody());
-            }
+    private boolean rejectMessage(Object message) {
+        if (!(message instanceof MicroServiceRequest)) {
+            return true;
         }
-        throw new AmqpRejectAndDontRequeueException("Reject message" + message);
+
+        return !isSupported(((MicroServiceRequest) message).getServiceType());
+
+    }
+
+    @Override
+    @Deprecated
+    public Object handleMessage(Object message) {
+        if (rejectMessage(message)) {
+            throw new AmqpRejectAndDontRequeueException("Reject message" + message);
+        }
+        return handlerInvokeService.invoke(((MicroServiceRequest)message).getAction(),
+                ((MicroServiceRequest)message).getBody());
+    }
+
+
+    @Override
+    public void doHandle(Object message) {
+        if (rejectMessage(message)) {
+            throw new AmqpRejectAndDontRequeueException("Reject message: " + message);
+        }
+        handlerInvokeService.invoke(((MicroServiceRequest)message).getAction(),
+                ((MicroServiceRequest)message).getBody(),
+                ((MicroServiceRequest)message).getReplyToExchange(),
+                ((MicroServiceRequest)message).getReplyToRoutingKey());
+
     }
 }

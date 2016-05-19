@@ -7,5 +7,8 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public interface MessageListener {
+    @Deprecated
     Object handleMessage(Object message);
+
+    void doHandle(Object message);
 }

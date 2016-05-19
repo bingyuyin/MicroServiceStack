@@ -16,6 +16,28 @@ public class RabbitMQCommunicationTemplateImpl implements MQCommunicationTemplat
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
+    @Override
+    public void send(Object message, String topic, String queueName) {
+        rabbitTemplate.convertAndSend(topic, queueName, message);
+    }
+
+    @Override
+    public Object receive(String queueName, long timeoutMs) {
+        rabbitTemplate.setReceiveTimeout(timeoutMs);
+        return rabbitTemplate.receiveAndConvert(queueName);
+    }
+
+    @Override
+    public Object sendAndReceive(Object message, String sendToExchange, String sendToRoutingKey, String receiveQueueName) {
+        return sendAndReceive(message, sendToExchange, sendToRoutingKey, receiveQueueName, 3000);
+    }
+
+    @Override
+    public Object sendAndReceive(Object message, String sendToExchange, String sendToRoutingKey, String receiveQueueName, long timeoutMs) {
+        send(message, sendToExchange, sendToRoutingKey);
+        return receive(receiveQueueName, timeoutMs);
+    }
+
     public void broadcast(Object message, String topic) {
         rabbitTemplate.convertAndSend(topic, null, message);
     }
@@ -24,9 +46,7 @@ public class RabbitMQCommunicationTemplateImpl implements MQCommunicationTemplat
         return rabbitTemplate.convertSendAndReceive(topic, null, message);
     }
 
-    public void send(Object message, String topic, String queueName) {
-        rabbitTemplate.convertAndSend(topic, queueName, message);
-    }
+
 
     public Object sendAndReceive(Object message, String topic, String queueName) {
         return rabbitTemplate.convertSendAndReceive(topic, queueName, message);

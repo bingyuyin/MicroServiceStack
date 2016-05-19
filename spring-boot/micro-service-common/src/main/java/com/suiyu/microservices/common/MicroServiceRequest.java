@@ -9,6 +9,8 @@ public class MicroServiceRequest implements Serializable {
     private Object body = null;
     private MicroServiceType serviceType = null;
     private Object action  = null;
+    private String replyToExchange = null;
+    private String replyToRoutingKey = null;
 
     public Object getBody() {
         return body;
@@ -34,9 +36,27 @@ public class MicroServiceRequest implements Serializable {
         this.action = action;
     }
 
+    public String getReplyToExchange() {
+        return replyToExchange;
+    }
+
+    public void setReplyToExchange(String replyToExchange) {
+        this.replyToExchange = replyToExchange;
+    }
+
+    public String getReplyToRoutingKey() {
+        return replyToRoutingKey;
+    }
+
+    public void setReplyToRoutingKey(String replyToRoutingKey) {
+        this.replyToRoutingKey = replyToRoutingKey;
+    }
+
     public String toString() {
         return "MicroServiceRequest [ serviceType: " + serviceType + ",\n" +
                                 "action: " + action + ",\n" +
-                                "body: " + body + "]";
+                                "body: " + body + ",\n" +
+                                "replyToExchange: " + replyToExchange + ",\n" +
+                                "replyToRoutingKey: " + replyToRoutingKey + "]";
     }
 }

@@ -8,4 +8,5 @@ import org.springframework.stereotype.Component;
 @Component
 public interface HandlerInvokeService {
     Object invoke(Object action, Object body);
+    void doInvoke(Object action, Object body, String replyToExchange, String replyToRoutingKey);
 }
