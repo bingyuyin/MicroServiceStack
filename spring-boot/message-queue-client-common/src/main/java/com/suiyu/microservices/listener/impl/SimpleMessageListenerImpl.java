@@ -69,7 +69,7 @@ public class SimpleMessageListenerImpl implements MessageListener {
         }
         handlerInvokeService.doInvoke(((MicroServiceRequest)message).getAction(),
                 ((MicroServiceRequest)message).getBody(),
-                ((MicroServiceRequest)message).getReplyToExchange(),
+                ((MicroServiceRequest)message).getReplyToExchangeName(),
                 ((MicroServiceRequest)message).getReplyToRoutingKey());
 
     }

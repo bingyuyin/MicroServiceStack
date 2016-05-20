@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public interface MQAdmin {
-    String createTempQueueAndBindingToTopicExchangeWithName(String exchangeName, String prefix);
+//    String createTempQueueAndBindingToTopicExchangeWithName(String exchangeName, String prefix);
+    String createTempQueueAndBindingExchangeWithName(TopicExchange exchange, String prefix);
     void clearQueue(String queueName);
 }

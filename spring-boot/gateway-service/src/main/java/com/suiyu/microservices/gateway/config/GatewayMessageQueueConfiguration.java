@@ -20,6 +20,7 @@ public class GatewayMessageQueueConfiguration {
     public void init() {
         amqpAdmin.declareExchange(requestExchange());
         amqpAdmin.declareExchange(broadcastExchange());
+        amqpAdmin.declareExchange(replyExchange());
     }
 
     @Bean(name = "broadcastExchange")
@@ -31,5 +32,12 @@ public class GatewayMessageQueueConfiguration {
     TopicExchange requestExchange() {
         return new TopicExchange(MicroServiceConstants.REQUEST_EXCHANGE_NAME);
     }
+
+    @Bean(name = "replyExchange")
+    TopicExchange replyExchange(){
+        return new TopicExchange(MicroServiceConstants.REPLY_EXCHANGE_NAME);
+    }
+
+
 
 }

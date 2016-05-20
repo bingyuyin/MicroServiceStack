@@ -8,7 +8,10 @@ import com.suiyu.microservices.gateway.controller.CustomerController;
 import com.suiyu.microservices.model.MQAdmin;
 import com.suiyu.microservices.model.MQCommunicationTemplate;
 import com.suiyu.microservices.model.MicroServiceRequestFactory;
+import org.springframework.amqp.core.TopicExchange;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,22 +36,27 @@ public class CustomerControllerImpl implements CustomerController {
     @Autowired
     private MicroServiceRequestFactory requestFactory;
 
+    @Autowired
+    @Qualifier(value = "replyExchange")
+    private TopicExchange replyExchange;
+
     @Override
     @RequestMapping(value = "all", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<Object> getCustomers() {
-        String callerId = UUID.randomUUID().toString();
-        String queueName = "get-all-customers-" + callerId;
-
+        String queueName = mqAdmin.createTempQueueAndBindingExchangeWithName(replyExchange,
+                "GET-ALL-USERS-");
 
         MicroServiceRequest request = requestFactory.createRequest(MicroServiceType.user_management_service,
-                CustomerActionType.get_all_cutomers,
-                null, "", "");
+                CustomerActionType.get_all_customers,
+                queueName,
+                replyExchange.getName(),
+                queueName);
 
-        mqCommunicationTemplate.sendAndReceive(request,
+        Object res = mqCommunicationTemplate.sendAndReceive(request,
                 MicroServiceConstants.REQUEST_EXCHANGE_NAME,
                 MicroServiceConstants.USER_MANAGEMENT_SERVICE_QUEUE_NAME,
-                "");
-        return null;
+                queueName);
+        return new ResponseEntity<Object>(res, HttpStatus.OK);
     }
 }

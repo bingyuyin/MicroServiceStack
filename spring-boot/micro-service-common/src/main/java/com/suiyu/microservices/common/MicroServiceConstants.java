@@ -10,6 +10,7 @@ public class MicroServiceConstants {
 
     public static final String REQUEST_EXCHANGE_NAME = "REQUEST-EXCHANGE";
     public static final String BROADCAST_EXCHANGE_NAME = "BROADCAST-EXCHANGE";
+    public static final String REPLY_EXCHANGE_NAME = "REPLY-EXCHANGE";
     public static final String GATEWAY_FANOUT_EXCHANGE_NAME = "GATEWAY-FANOUT-EXCHANGE";
     public static final String GATEWAY_TOPIC_EXCHANGE_NAME = "GATEWAY-TOPIC-EXCHANGE";
     public static final String SIMPLE_SERVICE_QUEUE_NAME = "SIMPLE-SERVICE-QUEUE";
