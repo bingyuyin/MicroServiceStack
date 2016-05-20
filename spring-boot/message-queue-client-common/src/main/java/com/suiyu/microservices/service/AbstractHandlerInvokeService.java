@@ -39,6 +39,12 @@ public class AbstractHandlerInvokeService implements HandlerInvokeService {
     @Override
     public void doInvoke(Object action, Object body, String replyToExchange, String replyToRoutingKey) {
         Object response = invoke(action, body);
+        if (replyToExchange == null || replyToExchange.equals("")) {
+            return ;
+        }
+        if (replyToRoutingKey == null || replyToRoutingKey.equals("")) {
+            return ;
+        }
         mqCommunicationTemplate.send(response, replyToExchange, replyToRoutingKey);
     }
 }

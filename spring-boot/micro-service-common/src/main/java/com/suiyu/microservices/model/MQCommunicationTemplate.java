@@ -8,8 +8,13 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public interface MQCommunicationTemplate {
-    void send(Object message, String topic, String queueName);
+    void send(Object message, String exchange, String routingKey);
+    Object receiveOnly(String queueName);
+    Object receiveOnly(String queueName, long timeoutMs);
     Object receive(String queueName, long timeoutMs);
+    Object receive(String queueName);
+    Object sendAndReceiveOnly(Object message, String sendToExchange, String sendToRoutingKey, String receiveQueueName);
+    Object sendAndReceiveOnly(Object message, String sendToExchange, String sendToRoutingKey, String receiveQueueName, long timeoutMs);
     Object sendAndReceive(Object message, String sendToExchange, String sendToRoutingKey, String receiveQueueName);
     Object sendAndReceive(Object message, String sendToExchange, String sendToRoutingKey, String receiveQueueName, long timeoutMs);
     @Deprecated

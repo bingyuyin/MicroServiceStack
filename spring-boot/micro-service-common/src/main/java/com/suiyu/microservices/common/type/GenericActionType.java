@@ -1,4 +1,4 @@
-package com.suiyu.microservices.common;
+package com.suiyu.microservices.common.type;
 
 /**
  * Created by BingyuYin on 2016/4/16.

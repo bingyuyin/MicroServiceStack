@@ -2,6 +2,7 @@ package com.suiyu.microservices.model.impl;
 
 import com.suiyu.microservices.common.MicroServiceResponse;
 import com.suiyu.microservices.model.MQCommunicationTemplate;
+import org.springframework.amqp.core.AmqpAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,15 +17,46 @@ public class RabbitMQCommunicationTemplateImpl implements MQCommunicationTemplat
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
+    @Autowired
+    private AmqpAdmin amqpAdmin;
+
     @Override
-    public void send(Object message, String topic, String queueName) {
-        rabbitTemplate.convertAndSend(topic, queueName, message);
+    public void send(Object message, String exchange, String routingKey) {
+        rabbitTemplate.convertAndSend(exchange, routingKey, message);
+    }
+
+    @Override
+    public Object receiveOnly(String queueName) {
+        return receiveOnly(queueName, 3000);
+    }
+
+    @Override
+    public Object receiveOnly(String queueName, long timeoutMs) {
+        rabbitTemplate.setReceiveTimeout(timeoutMs);
+        return rabbitTemplate.receiveAndConvert(queueName);
+    }
+
+    @Override
+    public Object sendAndReceiveOnly(Object message, String sendToExchange, String sendToRoutingKey, String receiveQueueName) {
+        return sendAndReceiveOnly(message, sendToExchange, sendToRoutingKey, receiveQueueName, 3000);
+    }
+
+    @Override
+    public Object sendAndReceiveOnly(Object message, String sendToExchange, String sendToRoutingKey, String receiveQueueName, long timeoutMs) {
+        send(message, sendToExchange, sendToRoutingKey);
+        return receiveOnly(receiveQueueName, timeoutMs);
     }
 
     @Override
     public Object receive(String queueName, long timeoutMs) {
-        rabbitTemplate.setReceiveTimeout(timeoutMs);
-        return rabbitTemplate.receiveAndConvert(queueName);
+        Object res = receiveOnly(queueName, timeoutMs);
+        amqpAdmin.deleteQueue(queueName);
+        return res;
+    }
+
+    @Override
+    public Object receive(String queueName) {
+        return receive(queueName, 3000);
     }
 
     @Override
@@ -34,8 +66,9 @@ public class RabbitMQCommunicationTemplateImpl implements MQCommunicationTemplat
 
     @Override
     public Object sendAndReceive(Object message, String sendToExchange, String sendToRoutingKey, String receiveQueueName, long timeoutMs) {
-        send(message, sendToExchange, sendToRoutingKey);
-        return receive(receiveQueueName, timeoutMs);
+        Object res = sendAndReceiveOnly(message, sendToExchange, sendToRoutingKey, receiveQueueName, timeoutMs);
+        amqpAdmin.deleteQueue(receiveQueueName);
+        return res;
     }
 
     public void broadcast(Object message, String topic) {

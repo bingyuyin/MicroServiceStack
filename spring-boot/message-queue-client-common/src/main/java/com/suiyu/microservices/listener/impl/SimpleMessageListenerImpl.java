@@ -1,7 +1,7 @@
 package com.suiyu.microservices.listener.impl;
 
 import com.suiyu.microservices.common.MicroServiceRequest;
-import com.suiyu.microservices.common.MicroServiceType;
+import com.suiyu.microservices.common.type.MicroServiceType;
 import com.suiyu.microservices.listener.MessageListener;
 import com.suiyu.microservices.model.MicroServiceRegistry;
 import com.suiyu.microservices.service.HandlerInvokeService;
@@ -67,7 +67,7 @@ public class SimpleMessageListenerImpl implements MessageListener {
         if (rejectMessage(message)) {
             throw new AmqpRejectAndDontRequeueException("Reject message: " + message);
         }
-        handlerInvokeService.invoke(((MicroServiceRequest)message).getAction(),
+        handlerInvokeService.doInvoke(((MicroServiceRequest)message).getAction(),
                 ((MicroServiceRequest)message).getBody(),
                 ((MicroServiceRequest)message).getReplyToExchange(),
                 ((MicroServiceRequest)message).getReplyToRoutingKey());

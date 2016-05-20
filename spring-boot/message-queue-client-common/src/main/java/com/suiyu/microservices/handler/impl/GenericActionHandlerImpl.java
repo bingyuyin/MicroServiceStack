@@ -1,6 +1,6 @@
 package com.suiyu.microservices.handler.impl;
 
-import com.suiyu.microservices.common.GenericActionType;
+import com.suiyu.microservices.common.type.GenericActionType;
 import com.suiyu.microservices.handler.MicroServiceActionHandler;
 import com.suiyu.microservices.model.MicroServiceResponseFactory;
 import org.springframework.beans.factory.annotation.Autowired;

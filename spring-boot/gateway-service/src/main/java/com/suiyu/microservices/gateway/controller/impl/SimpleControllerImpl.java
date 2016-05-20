@@ -1,6 +1,9 @@
-package com.suiyu.microservices.gateway.controller.simple;
+package com.suiyu.microservices.gateway.controller.impl;
 
 import com.suiyu.microservices.common.*;
+import com.suiyu.microservices.common.type.CommonActionType;
+import com.suiyu.microservices.common.type.GenericActionType;
+import com.suiyu.microservices.common.type.MicroServiceType;
 import com.suiyu.microservices.model.MQCommunicationTemplate;
 import com.suiyu.microservices.model.MicroServiceRequestFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,14 +13,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.lang.reflect.Method;
-
 /**
  * Created by BingyuYin on 2016/4/16.
  */
 @Controller
 @RequestMapping("/simple")
-public class SimpleController {
+public class SimpleControllerImpl {
 
     @Autowired
     private MicroServiceRequestFactory requestFactory;

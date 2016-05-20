@@ -1,5 +1,7 @@
 package com.suiyu.microservices.common;
 
+import com.suiyu.microservices.common.type.MicroServiceType;
+
 import java.io.Serializable;
 
 /**
@@ -9,7 +11,7 @@ public class MicroServiceRequest implements Serializable {
     private Object body = null;
     private MicroServiceType serviceType = null;
     private Object action  = null;
-    private String replyToExchange = null;
+    private String replyToExchangeName = null;
     private String replyToRoutingKey = null;
 
     public Object getBody() {
@@ -36,12 +38,12 @@ public class MicroServiceRequest implements Serializable {
         this.action = action;
     }
 
-    public String getReplyToExchange() {
-        return replyToExchange;
+    public String getReplyToExchangeName() {
+        return replyToExchangeName;
     }
 
-    public void setReplyToExchange(String replyToExchange) {
-        this.replyToExchange = replyToExchange;
+    public void setReplyToExchangeName(String replyToExchangeName) {
+        this.replyToExchangeName = replyToExchangeName;
     }
 
     public String getReplyToRoutingKey() {
@@ -56,7 +58,7 @@ public class MicroServiceRequest implements Serializable {
         return "MicroServiceRequest [ serviceType: " + serviceType + ",\n" +
                                 "action: " + action + ",\n" +
                                 "body: " + body + ",\n" +
-                                "replyToExchange: " + replyToExchange + ",\n" +
+                                "replyToExchange: " + replyToExchangeName + ",\n" +
                                 "replyToRoutingKey: " + replyToRoutingKey + "]";
     }
 }
