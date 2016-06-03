@@ -13,15 +13,15 @@ public class TestActionsHandlerImpl extends AbstractMicroServiceActionsHandler {
 
     @PostConstruct
     public void initTestActionsHandler() {
-        try {
-            methodInvokeHelperMap.put("test_action",
-                    new MethodInvokeHelper(this, this.getClass().getDeclaredMethod("test", Object.class)));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        handlerLookup.put("test_action", new ActionHandler() {
+            @Override
+            public Object doHandle(Object body) {
+                return test(body);
+            }
+        });
     }
 
     private String test(Object body) {
-        return "Test Service Test" + body;
+        return "Test Action Handler Test: " + body;
     }
 }

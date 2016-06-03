@@ -12,16 +12,16 @@ import javax.annotation.PostConstruct;
 public class GenericActionsHandlerImpl extends AbstractMicroServiceActionsHandler {
 
     @PostConstruct
-    void initGenericActionsHandler() {
-        try {
-            methodInvokeHelperMap.put("generic_test",
-                    new MethodInvokeHelper(this, this.getClass().getDeclaredMethod("test", Object.class)));
-        } catch (NoSuchMethodException ex) {
-            ex.printStackTrace();
-        }
+    public void initGenericActionsHandler() {
+        handlerLookup.put("generic_test_action", new ActionHandler() {
+            @Override
+            public Object doHandle(Object body) {
+                return test(body);
+            }
+        });
     }
 
     private String test(Object body) {
-        return "Generic Action Handler Test" + body;
+        return "Generic Action Handler Test: " + body;
     }
 }

@@ -33,7 +33,7 @@ public class AbstractHandlerInvokeService implements HandlerInvokeService {
             }
             return response;
         }
-        return responseFactory.createNullActionHandleResponse(-1, "Can not handle the action: " + action);
+        return responseFactory.createNullActionHandleResponse(-3, "Can not handle the action: " + action);
     }
 
     @Override

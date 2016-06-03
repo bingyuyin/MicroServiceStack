@@ -15,53 +15,53 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 abstract public class AbstractMicroServiceActionsHandler implements MicroServiceActionsHandler {
 
-    protected class MethodInvokeHelper {
-        private Object instance;
-        private Method method;
+//    protected class MethodInvokeHelper {
+//        private Object instance;
+//        private Method method;
+//
+//        public MethodInvokeHelper(Object instance, Method method) {
+//            this.instance = instance;
+//            this.method = method;
+//        }
+//
+//        public Object doInvoke(Object argBody) throws IllegalAccessException,
+//                                                InvocationTargetException{
+//            method.setAccessible(true);
+//            return method.invoke(instance, argBody);
+//        }
+//
+//        public Object getInstance() {
+//            return instance;
+//        }
+//
+//        public void setInstance(Object instance) {
+//            this.instance = instance;
+//        }
+//
+//        public Method getMethod() {
+//            return method;
+//        }
+//
+//        public void setMethod(Method method) {
+//            this.method = method;
+//        }
+//    }
 
-        public MethodInvokeHelper(Object instance, Method method) {
-            this.instance = instance;
-            this.method = method;
-        }
-
-        public Object doInvoke(Object argBody) throws IllegalAccessException,
-                                                InvocationTargetException{
-            method.setAccessible(true);
-            return method.invoke(instance, argBody);
-        }
-
-        public Object getInstance() {
-            return instance;
-        }
-
-        public void setInstance(Object instance) {
-            this.instance = instance;
-        }
-
-        public Method getMethod() {
-            return method;
-        }
-
-        public void setMethod(Method method) {
-            this.method = method;
-        }
+    protected interface ActionHandler{
+        Object doHandle(Object body);
     }
 
-    protected Map<String, MethodInvokeHelper> methodInvokeHelperMap = new ConcurrentHashMap<String, MethodInvokeHelper>();
+    protected Map<String, ActionHandler> handlerLookup = new ConcurrentHashMap<String, ActionHandler>();
 
     @Autowired
     private MicroServiceResponseFactory responseFactory;
 
     @Override
     public Object doHandle(String action, Object body) {
-        if (!methodInvokeHelperMap.containsKey(action)) {
-            return responseFactory.createNullActionHandleResponse(-1, "Can not handle action: " + action);
+        ActionHandler actionHandler = handlerLookup.get(action);
+        if (null == actionHandler) {
+            return responseFactory.createNullActionHandleResponse("Can not handle the action: " + action);
         }
-        try {
-           return methodInvokeHelperMap.get(action).doInvoke(body);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return responseFactory.createErrorResponse(-2, "Failed to handle action: " + action);
+        return actionHandler.doHandle(body);
     }
 }

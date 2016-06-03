@@ -50,7 +50,7 @@ public class TestControllerImpl implements TestController {
                 null,
                 replyExchange.getName(),
                 receiveQueueName);
-        Object res = mqCommunicationTemplate.sendAndReceive(request, requestExchange.getName(), "TEST-SERVICE",receiveQueueName);
+        Object res = mqCommunicationTemplate.sendAndReceive(request, requestExchange.getName(), "TEST-SERVICE-QUEUE",receiveQueueName);
         return new ResponseEntity<Object>(res, HttpStatus.OK);
     }
 }
