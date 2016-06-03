@@ -51,7 +51,7 @@
         <module>micro-service-common</module>
         <module>message-queue-client-common</module>
         <module>gateway-service</module>
-        <module>user-management-service</module>
+        <module>test-service</module>
         <!--<module>infrastructure-service</module>-->
     </modules>
 

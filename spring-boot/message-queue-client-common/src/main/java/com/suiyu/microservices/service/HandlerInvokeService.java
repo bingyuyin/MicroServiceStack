@@ -1,5 +1,6 @@
 package com.suiyu.microservices.service;
 
+import com.suiyu.microservices.common.MicroServiceRequest;
 import org.springframework.stereotype.Component;
 
 /**
@@ -7,6 +8,6 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public interface HandlerInvokeService {
-    Object invoke(Object action, Object body);
-    void doInvoke(Object action, Object body, String replyToExchange, String replyToRoutingKey);
+    Object doInvoke(String action, Object body);
+    void invoke(MicroServiceRequest request);
 }

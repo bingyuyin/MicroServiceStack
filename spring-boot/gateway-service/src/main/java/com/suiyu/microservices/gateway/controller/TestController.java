@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * Created by yinbing on 5/20/2016.
  */
 @Controller
-@RequestMapping("/customer")
-public interface CustomerController {
+@RequestMapping("/test")
+public interface TestController {
     @RequestMapping(value="all",method = RequestMethod.GET)
     @ResponseBody
-    ResponseEntity<Object> getCustomers();
+    ResponseEntity<Object> getTest();
 
 }

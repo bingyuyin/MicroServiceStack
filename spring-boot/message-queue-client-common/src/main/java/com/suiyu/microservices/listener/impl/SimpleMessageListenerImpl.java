@@ -1,7 +1,6 @@
 package com.suiyu.microservices.listener.impl;
 
 import com.suiyu.microservices.common.MicroServiceRequest;
-import com.suiyu.microservices.common.type.MicroServiceType;
 import com.suiyu.microservices.listener.MessageListener;
 import com.suiyu.microservices.model.MicroServiceRegistry;
 import com.suiyu.microservices.service.HandlerInvokeService;
@@ -19,8 +18,6 @@ import java.util.Set;
 @Component
 public class SimpleMessageListenerImpl implements MessageListener {
 
-    private Set<MicroServiceType> supportServiceSet = new HashSet<MicroServiceType>();
-
     @Autowired
     private MicroServiceRegistry serviceRegistry;
 
@@ -29,25 +26,17 @@ public class SimpleMessageListenerImpl implements MessageListener {
 
     @PostConstruct
     public void initSimpleMessageListenerImpl() {
-        supportServiceSet.add(serviceRegistry.getServiceType());
-        supportServiceSet.add(MicroServiceType.simple_service);
+
     }
 
-    private boolean isSupported(MicroServiceType serviceType) {
-        for ( MicroServiceType supportService : supportServiceSet ) {
-            if ( supportService.equals(serviceType) ) {
-                return true;
-            }
-        }
-        return false;
+    private boolean isSupported(String serviceName) {
+        return (serviceRegistry.getServiceName() != null) && serviceRegistry.getServiceName().equals(serviceName);
     }
 
     private boolean rejectMessage(Object message) {
-        if (!(message instanceof MicroServiceRequest)) {
-            return true;
-        }
-
-        return !isSupported(((MicroServiceRequest) message).getServiceType());
+        return (message == null) ||
+                !(message instanceof MicroServiceRequest) ||
+                !isSupported(((MicroServiceRequest) message).getServiceName());
 
     }
 
@@ -57,8 +46,8 @@ public class SimpleMessageListenerImpl implements MessageListener {
         if (rejectMessage(message)) {
             throw new AmqpRejectAndDontRequeueException("Reject message" + message);
         }
-        return handlerInvokeService.invoke(((MicroServiceRequest)message).getAction(),
-                ((MicroServiceRequest)message).getBody());
+        return handlerInvokeService.doInvoke(((MicroServiceRequest) message).getAction(),
+                ((MicroServiceRequest) message).getBody());
     }
 
 
@@ -67,10 +56,7 @@ public class SimpleMessageListenerImpl implements MessageListener {
         if (rejectMessage(message)) {
             throw new AmqpRejectAndDontRequeueException("Reject message: " + message);
         }
-        handlerInvokeService.doInvoke(((MicroServiceRequest)message).getAction(),
-                ((MicroServiceRequest)message).getBody(),
-                ((MicroServiceRequest)message).getReplyToExchangeName(),
-                ((MicroServiceRequest)message).getReplyToRoutingKey());
+        handlerInvokeService.invoke((MicroServiceRequest) message);
 
     }
 }

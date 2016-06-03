@@ -1,7 +1,5 @@
 package com.suiyu.microservices.model;
 
-import com.suiyu.microservices.common.MicroServiceConstants;
-import com.suiyu.microservices.common.type.MicroServiceType;
 import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.stereotype.Component;
@@ -9,15 +7,40 @@ import org.springframework.stereotype.Component;
 /**
  * Created by BingyuYin on 2016/4/16.
  */
-@Component
 public class MicroServiceRegistry {
-    private MicroServiceType serviceType = MicroServiceType.simple_service;
-    private String queueName = MicroServiceConstants.SIMPLE_SERVICE_QUEUE_NAME;
-    private String routingKey = MicroServiceConstants.SIMPLE_SERVICE_QUEUE_NAME;
-    private TopicExchange requestExchange = null;
-    private FanoutExchange broadcastExchange = null;
+    private String serviceName = null;
+    private String serviceTopic = null;
+    private String serviceBroadcast = null;
+    private String routingKey = null;
+
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
+    }
+
+    public String getServiceTopic() {
+        return serviceTopic;
+    }
+
+    public void setServiceTopic(String serviceTopic) {
+        this.serviceTopic = serviceTopic;
+    }
+
+    public String getServiceBroadcast() {
+        return serviceBroadcast;
+    }
+
+    public void setServiceBroadcast(String serviceBroadcast) {
+        this.serviceBroadcast = serviceBroadcast;
+    }
 
     public String getRoutingKey() {
+        if (null == routingKey) {
+            return getServiceQueueName();
+        }
         return routingKey;
     }
 
@@ -25,36 +48,16 @@ public class MicroServiceRegistry {
         this.routingKey = routingKey;
     }
 
-    public FanoutExchange getBroadcastExchange() {
-        return broadcastExchange;
+    public String getServiceQueueName() {
+        return serviceName + "-QUEUE";
     }
 
-    public void setBroadcastExchange(FanoutExchange broadcastExchange) {
-        this.broadcastExchange = broadcastExchange;
+    public TopicExchange getServiceTopicExchange() {
+        return new TopicExchange(serviceTopic);
     }
 
-    public TopicExchange getRequestExchange() {
-        return requestExchange;
-    }
-
-    public void setRequestExchange(TopicExchange requestExchange) {
-        this.requestExchange = requestExchange;
-    }
-
-    public MicroServiceType getServiceType() {
-        return serviceType;
-    }
-
-    public void setServiceType(MicroServiceType serviceType) {
-        this.serviceType = serviceType;
-    }
-
-    public String getQueueName() {
-        return queueName;
-    }
-
-    public void setQueueName(String queueName) {
-        this.queueName = queueName;
+    public FanoutExchange getBroadcastTopicExchange() {
+        return new FanoutExchange(serviceBroadcast);
     }
 
 }

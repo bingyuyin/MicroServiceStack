@@ -1,7 +1,5 @@
 package com.suiyu.microservices.common;
 
-import com.suiyu.microservices.common.type.MicroServiceType;
-
 import java.io.Serializable;
 
 /**
@@ -9,10 +7,27 @@ import java.io.Serializable;
  */
 public class MicroServiceRequest implements Serializable {
     private Object body = null;
-    private MicroServiceType serviceType = null;
-    private Object action  = null;
-    private String replyToExchangeName = null;
+    private String serviceName = null;
+    private String action = null;
+    private String replyToTopic = null;
     private String replyToRoutingKey = null;
+    private String replyToBroadcast = null;
+
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
+    }
+
+    public String getAction() {
+        return action;
+    }
+
+    public void setAction(String action) {
+        this.action = action;
+    }
 
     public Object getBody() {
         return body;
@@ -22,28 +37,12 @@ public class MicroServiceRequest implements Serializable {
         this.body = body;
     }
 
-    public MicroServiceType getServiceType() {
-        return serviceType;
+    public String getReplyToTopic() {
+        return replyToTopic;
     }
 
-    public void setServiceType(MicroServiceType serviceType) {
-        this.serviceType = serviceType;
-    }
-
-    public Object getAction() {
-        return action;
-    }
-
-    public void setAction(Object action) {
-        this.action = action;
-    }
-
-    public String getReplyToExchangeName() {
-        return replyToExchangeName;
-    }
-
-    public void setReplyToExchangeName(String replyToExchangeName) {
-        this.replyToExchangeName = replyToExchangeName;
+    public void setReplyToTopic(String replyToTopic) {
+        this.replyToTopic = replyToTopic;
     }
 
     public String getReplyToRoutingKey() {
@@ -54,11 +53,21 @@ public class MicroServiceRequest implements Serializable {
         this.replyToRoutingKey = replyToRoutingKey;
     }
 
+    public String getReplyToBroadcast() {
+        return replyToBroadcast;
+    }
+
+    public void setReplyToBroadcast(String replyToBroadcast) {
+        this.replyToBroadcast = replyToBroadcast;
+    }
+
+    @Override
     public String toString() {
-        return "MicroServiceRequest [ serviceType: " + serviceType + ",\n" +
+        return "MicroServiceRequest [ serviceName: " + serviceName + ",\n" +
                                 "action: " + action + ",\n" +
                                 "body: " + body + ",\n" +
-                                "replyToExchange: " + replyToExchangeName + ",\n" +
-                                "replyToRoutingKey: " + replyToRoutingKey + "]";
+                                "replyToExchange: " + replyToTopic + ",\n" +
+                                "replyToRoutingKey: " + replyToRoutingKey + ",\n" +
+                                "replyToBroadcast: " + replyToBroadcast + "]";
     }
 }

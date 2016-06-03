@@ -1,8 +1,8 @@
 package com.suiyu.microservices.service;
 
-import com.suiyu.microservices.common.MicroServiceResponse;
+import com.suiyu.microservices.common.MicroServiceRequest;
 import com.suiyu.microservices.common.NullActionHandleResponse;
-import com.suiyu.microservices.handler.MicroServiceActionHandler;
+import com.suiyu.microservices.handler.MicroServiceActionsHandler;
 import com.suiyu.microservices.model.MQCommunicationTemplate;
 import com.suiyu.microservices.model.MicroServiceResponseFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ import java.util.List;
  */
 @Component
 public class AbstractHandlerInvokeService implements HandlerInvokeService {
-    protected List<MicroServiceActionHandler> list = new ArrayList<MicroServiceActionHandler>();
+    protected List<MicroServiceActionsHandler> list = new ArrayList<MicroServiceActionsHandler>();
 
     @Autowired
     protected MicroServiceResponseFactory responseFactory;
@@ -25,8 +25,8 @@ public class AbstractHandlerInvokeService implements HandlerInvokeService {
     private MQCommunicationTemplate mqCommunicationTemplate;
 
     @Override
-    public Object invoke(Object action, Object body) {
-        for (MicroServiceActionHandler handler : list) {
+    public Object doInvoke(String action, Object body) {
+        for (MicroServiceActionsHandler handler : list) {
             Object response = handler.doHandle(action, body);
             if (response instanceof NullActionHandleResponse) {
                 continue;
@@ -37,14 +37,17 @@ public class AbstractHandlerInvokeService implements HandlerInvokeService {
     }
 
     @Override
-    public void doInvoke(Object action, Object body, String replyToExchange, String replyToRoutingKey) {
-        Object response = invoke(action, body);
-        if (replyToExchange == null || replyToExchange.equals("")) {
-            return ;
+    public void invoke(MicroServiceRequest request) {
+        Object response = doInvoke(request.getAction(), request.getBody());
+
+        if (request.getReplyToTopic() != null &&
+            !request.getReplyToTopic().equals("") &&
+            request.getReplyToRoutingKey() != null &&
+            !request.getReplyToRoutingKey().equals("")) {
+
+            mqCommunicationTemplate.send(response,
+                    request.getReplyToTopic(),
+                    request.getReplyToRoutingKey());
         }
-        if (replyToRoutingKey == null || replyToRoutingKey.equals("")) {
-            return ;
-        }
-        mqCommunicationTemplate.send(response, replyToExchange, replyToRoutingKey);
     }
 }

@@ -20,6 +20,7 @@ import javax.annotation.PostConstruct;
  */
 @Configuration
 public class MessageQueueConfiguration {
+
     @Autowired
     MicroServiceRegistry serviceRegistry;
 
@@ -39,26 +40,26 @@ public class MessageQueueConfiguration {
         SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
         // TODO: set the queue name for the container
-        container.setQueueNames(serviceRegistry.getQueueName());
+        container.setQueueNames(serviceRegistry.getServiceQueueName());
         container.setMessageListener(microServiceListenerAdapter());
         return container;
     }
 
     @Bean
     public Queue serviceQueue(){
-        return new Queue(serviceRegistry.getQueueName());
+        return new Queue(serviceRegistry.getServiceQueueName());
     }
 
     @Bean
     public Binding serviceQueueRequestBinding() {
         return  BindingBuilder.bind(serviceQueue())
-                .to(serviceRegistry.getRequestExchange())
+                .to(serviceRegistry.getServiceTopicExchange())
                 .with(serviceRegistry.getRoutingKey());
     }
 
     @Bean Binding serviceQueueBroadcastBinding() {
         return BindingBuilder.bind(serviceQueue())
-                .to(serviceRegistry.getBroadcastExchange());
+                .to(serviceRegistry.getBroadcastTopicExchange());
     }
 
     @PostConstruct

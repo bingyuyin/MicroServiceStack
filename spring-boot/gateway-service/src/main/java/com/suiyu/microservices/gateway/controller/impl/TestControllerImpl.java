@@ -1,10 +1,7 @@
 package com.suiyu.microservices.gateway.controller.impl;
 
-import com.suiyu.microservices.common.MicroServiceConstants;
 import com.suiyu.microservices.common.MicroServiceRequest;
-import com.suiyu.microservices.common.type.CustomerActionType;
-import com.suiyu.microservices.common.type.MicroServiceType;
-import com.suiyu.microservices.gateway.controller.CustomerController;
+import com.suiyu.microservices.gateway.controller.TestController;
 import com.suiyu.microservices.model.MQAdmin;
 import com.suiyu.microservices.model.MQCommunicationTemplate;
 import com.suiyu.microservices.model.MicroServiceRequestFactory;
@@ -18,14 +15,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.UUID;
 
 /**
  * Created by yinbing on 5/20/2016.
  */
 @Controller
-@RequestMapping("/customer")
-public class CustomerControllerImpl implements CustomerController {
+@RequestMapping("/test")
+public class TestControllerImpl implements TestController {
 
     @Autowired
     private MQCommunicationTemplate mqCommunicationTemplate;
@@ -40,23 +36,21 @@ public class CustomerControllerImpl implements CustomerController {
     @Qualifier(value = "replyExchange")
     private TopicExchange replyExchange;
 
+    @Autowired
+    @Qualifier(value = "requestExchange")
+    private TopicExchange requestExchange;
+
     @Override
     @RequestMapping(value = "all", method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<Object> getCustomers() {
-        String queueName = mqAdmin.createTempQueueAndBindingExchangeWithName(replyExchange,
-                "GET-ALL-USERS-");
-
-        MicroServiceRequest request = requestFactory.createRequest(MicroServiceType.user_management_service,
-                CustomerActionType.get_all_customers,
-                queueName,
+    public ResponseEntity<Object> getTest() {
+        String receiveQueueName = mqAdmin.createTempQueueAndBindingExchangeWithName(replyExchange, "TEST-GET");
+        MicroServiceRequest request = requestFactory.createMicroServiceRequest("TEST-SERVICE",
+                "test_action",
+                null,
                 replyExchange.getName(),
-                queueName);
-
-        Object res = mqCommunicationTemplate.sendAndReceive(request,
-                MicroServiceConstants.REQUEST_EXCHANGE_NAME,
-                MicroServiceConstants.USER_MANAGEMENT_SERVICE_QUEUE_NAME,
-                queueName);
+                receiveQueueName);
+        Object res = mqCommunicationTemplate.sendAndReceive(request, requestExchange.getName(), "TEST-SERVICE",receiveQueueName);
         return new ResponseEntity<Object>(res, HttpStatus.OK);
     }
 }
